@@ -12,7 +12,7 @@ d3.tip = function() {
       html      = d3_tip_html,
       node      = initNode(),
       svg       = null,
-      point     = null;
+      point     = null
 
   function tip(vis) {
     svg = getSVGNode(vis)
@@ -30,7 +30,9 @@ d3.tip = function() {
         nodel   = d3.select(node), i = 0,
         coords
 
-    nodel.html(content).style('display', 'block')
+    nodel.html(content)
+      .style({ opacity: 1, pointerEvents: 'all' })
+
     while(i--) nodel.classed(directions[i], false)
     coords = direction_callbacks.get(dir).apply(this)
     nodel.classed(dir, true).style({
@@ -45,8 +47,8 @@ d3.tip = function() {
   //
   // Returns a tip
   tip.hide = function() {
-    node.style.display = 'none'
-    node.innerHTML = ''
+    nodel = d3.select(node)
+    nodel.style({ opacity: 0, pointerEvents: 'none' })
 
     return tip
   }
@@ -58,13 +60,14 @@ d3.tip = function() {
   //
   // Returns tip or attribute value
   tip.attr = function(n, v) {
-    if (arguments.length < 2) {
+    if (arguments.length < 2 && typeof n === 'string') {
       return d3.select(node).attr(n)
     } else {
-      d3.select(node).attr(n, v)
+      var args =  Array.prototype.slice.call(arguments)
+      d3.selection.prototype.attr.apply(d3.select(node), args)
     }
 
-    return tip;
+    return tip
   }
 
   // Public: Proxy style calls to the d3 tip container.  Sets or gets a style value.
@@ -74,13 +77,14 @@ d3.tip = function() {
   //
   // Returns tip or style property value
   tip.style = function(n, v) {
-    if (arguments.length < 2) {
+    if (arguments.length < 2 && typeof n === 'string') {
       return d3.select(node).style(n)
     } else {
-      d3.select(node).style(n, v)
+      var args =  Array.prototype.slice.call(arguments)
+      d3.selection.prototype.style.apply(d3.select(node), args)
     }
 
-    return tip;
+    return tip
   }
 
   // Public: Set or get the direction of the tooltip
@@ -90,10 +94,11 @@ d3.tip = function() {
   //
   // Returns tip or direction
   tip.direction = function(v) {
-    if (!arguments.length) return direction;
-    direction = v == null ? v : d3.functor(v);
-    return tip;
-  };
+    if (!arguments.length) return direction
+    direction = v == null ? v : d3.functor(v)
+
+    return tip
+  }
 
   // Public: Sets or gets the offset of the tip
   //
@@ -101,10 +106,11 @@ d3.tip = function() {
   //
   // Returns offset or
   tip.offset = function(v) {
-    if (!arguments.length) return offset;
-    offset = v == null ? v : d3.functor(v);
-    return tip;
-  };
+    if (!arguments.length) return offset
+    offset = v == null ? v : d3.functor(v)
+
+    return tip
+  }
 
   // Public: sets or gets the html value of the tooltip
   //
@@ -112,11 +118,11 @@ d3.tip = function() {
   //
   // Returns html value or tip
   tip.html = function(v) {
-    if (!arguments.length) return html;
+    if (!arguments.length) return html
     html = v == null ? v : d3.functor(v)
 
     return tip
-  };
+  }
 
   function d3_tip_direction() { return 'n' }
   function d3_tip_offset() { return [0, 0] }
@@ -200,11 +206,15 @@ d3.tip = function() {
   }
 
   function initNode() {
-    var node = document.createElement('div')
-    node.style.position = 'absolute'
-    node.style.display = 'none'
-    node.style.boxSizing = 'border-box'
-    return node
+    var node = d3.select(document.createElement('div'))
+    node.style({
+      position: 'absolute',
+      opacity: 0,
+      pointerEvents: 'none',
+      boxSizing: 'border-box'
+    })
+
+    return node.node()
   }
 
   function getSVGNode(el) {
@@ -267,5 +277,5 @@ d3.tip = function() {
     return bbox
   }
 
-  return tip;
-}
+  return tip
+};
