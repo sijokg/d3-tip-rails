@@ -24,4 +24,4 @@ Then require it where you need it with JavaScript:
 
 ...or Coffeescript:
 
-    #= require d3-tip
+    #= require d3.tip
