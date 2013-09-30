@@ -20,7 +20,7 @@ Add this line to your `Gemfile`:
 
 Then require it where you need it with JavaScript:
 
-    //= require d3-tip
+    //= require d3.tip
 
 ...or Coffeescript:
 
